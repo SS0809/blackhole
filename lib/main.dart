@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:math';
 
 
@@ -65,6 +66,7 @@ class MovieListScreen extends StatelessWidget {
   }
 }
 
+
 class MovieDetailsWidget extends StatelessWidget {
   final Map<String, dynamic> movieData;
 
@@ -83,18 +85,29 @@ class MovieDetailsWidget extends StatelessWidget {
     final String streamtapeCode = movieData['streamtape_code'];
     final List<Object?> imgData = movieData['img_data'] as List<Object?>;
 
-    // Generate a random index to access a UUID from imgData list.
-    final int randomIndex = Random().nextInt(imgData.length);
-    final String imageUrl = "https://ucarecdn.com/" + (imgData[randomIndex] as String)+ "/";
+    // Create a list of ImageWidgets from the imgData list.
+    final List<Widget> imageWidgets = imgData.map((imageUrl) {
+      return Image.network(
+        "https://ucarecdn.com/$imageUrl/",
+        fit: BoxFit.cover,
+      );
+    }).toList();
+
+    // Generate a random index to set the initialPage of the carousel.
+    final int initialPage = Random().nextInt(imgData.length);
 
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            child: Image.network(
-              imageUrl,
-              fit: BoxFit.cover, // Optional: Adjust the image fit within the container
+          // Use the CarouselSlider to display the images in a carousel.
+          CarouselSlider(
+            items: imageWidgets,
+            options: CarouselOptions(
+              initialPage: initialPage,
+              autoPlay: true,
+              enlargeCenterPage: true,
+              aspectRatio: 16 / 9, // Optional: Adjust the aspect ratio of images
             ),
           ),
           SizedBox(height: 10),
