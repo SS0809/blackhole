@@ -10,7 +10,7 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final HttpLink httpLink = HttpLink('https://6cc0-157-34-47-50.ngrok-free.app');
+    final HttpLink httpLink = HttpLink('https://graphql-pyt9.onrender.com');
 
     final ValueNotifier<GraphQLClient> client = ValueNotifier<GraphQLClient>(
       GraphQLClient(
