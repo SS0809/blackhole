@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:math';
-
-
+import 'package:url_launcher/url_launcher.dart';
 void main() {
   runApp(MyApp());
 }
@@ -11,7 +10,7 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final HttpLink httpLink = HttpLink('https://1c85-49-35-138-84.ngrok-free.app');
+    final HttpLink httpLink = HttpLink('https://6cc0-157-34-47-50.ngrok-free.app');
 
     final ValueNotifier<GraphQLClient> client = ValueNotifier<GraphQLClient>(
       GraphQLClient(
@@ -19,15 +18,14 @@ class MyApp extends StatelessWidget {
         link: httpLink,
       ),
     );
-
     return GraphQLProvider(
-      client: client,
-      child: CacheProvider(
-        child: MaterialApp(
-          title: 'Movie App',
-          home: MovieListScreen(),
-        ),
-      ),
+    client: client,
+    child: CacheProvider(
+    child: MaterialApp(
+    title: 'Blackhole',
+    home: MovieListScreen(),
+    ),
+    ),
     );
   }
 }
@@ -36,30 +34,61 @@ class MovieListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Movie App'),
+        title: Text('Blackhole'),
       ),
       body: Query(
         options: QueryOptions(
           document: gql(r'''
-            query GetMovie($movieName: String!) {
-              movie(movie_name: $movieName) {
-                movie_name
-                streamtape_code
-                doodstream_code
-                img_data
-              }
+            query ExampleQuery {
+              allMovieNames
             }
           '''),
-          variables: {'movieName': 'FastX'}, // Replace with the movie name you want to fetch.
         ),
-        builder: (QueryResult? result, {refetch, FetchMore? fetchMore}) { // Add '?' after QueryResult and FetchMore
-          if (result?.hasException == true) { // Check if result is not null before accessing hasException
-            return Text(result!.exception.toString()); // Use null assertion operator (!) to indicate that result is not null
+        builder: (QueryResult result, {refetch, FetchMore? fetchMore}) {
+          if (result.hasException) {
+            return Text(result.exception.toString());
           }
 
-          final movieData = result?.data?['movie']; // Use null-aware operators (?) to safely access data
+          if (result.data == null) {
+            return Text('No data found');
+          }
 
-          return movieData != null ? MovieDetailsWidget(movieData) : Text('Movie not found');
+          final movieNames = result.data!['allMovieNames'] as List<dynamic>;
+
+          if (movieNames.isEmpty) {
+            return Text('No movies found');
+          }
+
+          return ListView.builder(
+            itemCount: movieNames.length,
+            itemBuilder: (context, index) {
+              final movieName = movieNames[index];
+              return Query(
+                options: QueryOptions(
+                  document: gql(r'''
+                    query GetMovie($movieName: String!) {
+                      movie(movie_name: $movieName) {
+                        movie_name
+                        streamtape_code
+                        doodstream_code
+                        img_data
+                      }
+                    }
+                  '''),
+                  variables: {'movieName': movieName},
+                ),
+                builder: (QueryResult? result, {refetch, FetchMore? fetchMore}) {
+                  if (result?.hasException == true) {
+                    return Text(result!.exception.toString());
+                  }
+
+                  final movieData = result?.data?['movie'];
+
+                  return movieData != null ? MovieDetailsWidget(movieData) : Text('Movie not found');
+                },
+              );
+            },
+          );
         },
       ),
     );
@@ -74,18 +103,23 @@ class MovieDetailsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Ensure movieData is not null and contains the required fields.
     if (movieData == null || !movieData.containsKey('img_data')) {
       return Text('Invalid movie data');
     }
 
-    // Extract the required data from the movieData map.
     final String movieName = movieData['movie_name'];
     final String doodstreamCode = movieData['doodstream_code'];
     final String streamtapeCode = movieData['streamtape_code'];
-    final List<Object?> imgData = movieData['img_data'] as List<Object?>;
+    final List<Object?> imgData = movieData['img_data'] as List<Object?>? ?? []; // Handle null case
+    void _openDoodstreamUrl() async {
+      final doodstreamUrl = 'https://dooood.com/d/' + movieData['doodstream_code'];
+      await launch(doodstreamUrl, forceSafariVC: false, forceWebView: false);
+    }
+    void _openStreamtapeUrl() async {
+      final streamtapeUrl = 'https://streamtape.com/v/' + movieData['streamtape_code'];
+      await launch(streamtapeUrl, forceSafariVC: false, forceWebView: false);
+    }
 
-    // Create a list of ImageWidgets from the imgData list.
     final List<Widget> imageWidgets = imgData.map((imageUrl) {
       return Image.network(
         "https://ucarecdn.com/$imageUrl/",
@@ -93,29 +127,42 @@ class MovieDetailsWidget extends StatelessWidget {
       );
     }).toList();
 
-    // Generate a random index to set the initialPage of the carousel.
     final int initialPage = Random().nextInt(imgData.length);
 
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Use the CarouselSlider to display the images in a carousel.
-          CarouselSlider(
-            items: imageWidgets,
-            options: CarouselOptions(
-              initialPage: initialPage,
-              autoPlay: true,
-              enlargeCenterPage: true,
-              aspectRatio: 16 / 9, // Optional: Adjust the aspect ratio of images
-            ),
+    return Column(
+      children: [
+        SizedBox(height: 10),
+        CarouselSlider(
+          items: imageWidgets,
+          options: CarouselOptions(
+            initialPage: initialPage,
+            autoPlay: true,
+            enlargeCenterPage: true,
+            aspectRatio: 16 / 9,
           ),
-          SizedBox(height: 10),
-          Text('Movie Name: $movieName'),
-          Text('Doodstream Code: $doodstreamCode'),
-          Text('Streamtape Code: $streamtapeCode'),
-        ],
-      ),
+        ),
+        SizedBox(height: 10),
+        Text('Movie Name: $movieName'),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Adjust the alignment as needed
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                _openDoodstreamUrl();
+              },
+              child: Text('Doodstream'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _openStreamtapeUrl();
+              },
+              child: Text('Streamtape'),
+            ),
+          ],
+        ),
+
+        SizedBox(height: 30),
+      ],
     );
   }
 }
