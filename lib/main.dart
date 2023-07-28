@@ -3,6 +3,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:math';
 import 'package:url_launcher/url_launcher.dart';
+import 'MovieDetailsWidget.dart';
 void main() {
   runApp(MyApp());
 }
@@ -19,150 +20,146 @@ class MyApp extends StatelessWidget {
       ),
     );
     return GraphQLProvider(
-    client: client,
-    child: CacheProvider(
-    child: MaterialApp(
-    title: 'Blackhole',
-    home: MovieListScreen(),
-    ),
-    ),
+      client: client,
+      child: CacheProvider(
+        child: MaterialApp(
+          theme: new ThemeData(
+            brightness:Brightness.dark,
+            primarySwatch: Colors.blue,
+            primaryColor: const Color(0xFF212121),
+            accentColor: const Color(0xFF64ffda),
+            canvasColor: const Color(0xFF303030),
+          ),
+          title: 'Blackhole',
+          home: MovieListScreen(),
+        ),
+      ),
     );
   }
 }
-class MovieListScreen extends StatelessWidget {
+
+class MovieListScreen extends StatefulWidget {
+  @override
+  _MovieListScreenState createState() => _MovieListScreenState();
+}
+
+class _MovieListScreenState extends State<MovieListScreen> {
+  bool _isSearchVisible = false; // Track whether search field is visible
+  final TextEditingController _searchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Blackhole'),
-      ),
-      body: Query(
-        options: QueryOptions(
-          document: gql(r'''
-            query ExampleQuery {
-              allMovieNames
-            }
-          '''),
-        ),
-        builder: (QueryResult result, {refetch, FetchMore? fetchMore}) {
-          if (result.hasException) {
-            return Text(result.exception.toString());
-          }
-
-          if (result.data == null) {
-            return Text('No data found');
-          }
-
-          final movieNames = result.data!['allMovieNames'] as List<dynamic>;
-
-          if (movieNames.isEmpty) {
-            return Text('No movies found');
-          }
-
-          return ListView.builder(
-            itemCount: movieNames.length,
-            itemBuilder: (context, index) {
-              final movieName = movieNames[index];
-              return Query(
-                options: QueryOptions(
-                  document: gql(r'''
-                    query GetMovie($movieName: String!) {
-                      movie(movie_name: $movieName) {
-                        movie_name
-                        streamtape_code
-                        doodstream_code
-                        img_data
-                      }
-                    }
-                  '''),
-                  variables: {'movieName': movieName},
-                ),
-                builder: (QueryResult? result, {refetch, FetchMore? fetchMore}) {
-                  if (result?.hasException == true) {
-                    return Text(result!.exception.toString());
-                  }
-
-                  final movieData = result?.data?['movie'];
-
-                  return movieData != null ? MovieDetailsWidget(movieData) : Text('Movie not found');
-                },
-              );
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              // Toggle the search field visibility
+              setState(() {
+                _isSearchVisible = !_isSearchVisible;
+              });
             },
-          );
+          ),
+        ],
+      ),
+      body: _isSearchVisible ? _buildSearchField() : _buildMovieList(),
+    );
+  }
+
+  Widget _buildSearchField() {
+    return Padding(
+      padding: EdgeInsets.all(16),
+      child: TextField(
+        controller: _searchController,
+        decoration: InputDecoration(
+          hintText: 'Search movies...',
+          suffixIcon: IconButton(
+            icon: Icon(Icons.clear),
+            onPressed: () {
+              // Clear the search query when the clear icon is clicked
+              _searchController.clear();
+            },
+          ),
+        ),
+        onChanged: (query) {
+          // Perform search as the user types (optional)
+          // _performSearch();
+        },
+        onSubmitted: (query) {
+          // Perform search when the user submits the search query
+          _performSearch();
         },
       ),
     );
   }
-}
 
+  Widget _buildMovieList() {
+    return Query(
+      options: QueryOptions(
+        document: gql(r'''
+          query ExampleQuery {
+            allMovieNames
+          }
+        '''),
+      ),
+      builder: (QueryResult result, {refetch, FetchMore? fetchMore}) {
+        if (result.hasException) {
+          return Text(result.exception.toString());
+        }
 
-class MovieDetailsWidget extends StatelessWidget {
-  final Map<String, dynamic> movieData;
+        if (result.data == null) {
+          return Text('Assessing the server');
+        }
 
-  MovieDetailsWidget(this.movieData);
+        final movieNames = result.data!['allMovieNames'] as List<dynamic>;
 
-  @override
-  Widget build(BuildContext context) {
-    if (movieData == null || !movieData.containsKey('img_data')) {
-      return Text('Invalid movie data');
-    }
+        if (movieNames.isEmpty) {
+          return Text('No movies found');
+        }
 
-    final String movieName = movieData['movie_name'];
-    final String doodstreamCode = movieData['doodstream_code'];
-    final String streamtapeCode = movieData['streamtape_code'];
-    final List<Object?> imgData = movieData['img_data'] as List<Object?>? ?? []; // Handle null case
-    void _openDoodstreamUrl() async {
-      final doodstreamUrl = 'https://dooood.com/d/' + movieData['doodstream_code'];
-      await launch(doodstreamUrl, forceSafariVC: false, forceWebView: false);
-    }
-    void _openStreamtapeUrl() async {
-      final streamtapeUrl = 'https://streamtape.com/v/' + movieData['streamtape_code'];
-      await launch(streamtapeUrl, forceSafariVC: false, forceWebView: false);
-    }
+        return ListView.builder(
+          itemCount: movieNames.length,
+          itemBuilder: (context, index) {
+            final movieName = movieNames[index];
+            return Query(
+              options: QueryOptions(
+                document: gql(r'''
+                  query GetMovie($movieName: String!) {
+                    movie(movie_name: $movieName) {
+                      movie_name
+                      streamtape_code
+                      doodstream_code
+                      img_data
+                    }
+                  }
+                '''),
+                variables: {'movieName': movieName},
+              ),
+              builder: (QueryResult? result, {refetch, FetchMore? fetchMore}) {
+                if (result?.hasException == true) {
+                  return Text(result!.exception.toString());
+                }
 
-    final List<Widget> imageWidgets = imgData.map((imageUrl) {
-      return Image.network(
-        "https://ucarecdn.com/$imageUrl/",
-        fit: BoxFit.cover,
-      );
-    }).toList();
+                final movieData = result?.data?['movie'];
 
-    final int initialPage = Random().nextInt(imgData.length);
-
-    return Column(
-      children: [
-        SizedBox(height: 10),
-        CarouselSlider(
-          items: imageWidgets,
-          options: CarouselOptions(
-            initialPage: initialPage,
-            autoPlay: true,
-            enlargeCenterPage: true,
-            aspectRatio: 16 / 9,
-          ),
-        ),
-        SizedBox(height: 10),
-        Text('Movie Name: $movieName'),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Adjust the alignment as needed
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                _openDoodstreamUrl();
+                return movieData != null ? MovieDetailsWidget(movieData) : Text('Movie not found');
               },
-              child: Text('Doodstream'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                _openStreamtapeUrl();
-              },
-              child: Text('Streamtape'),
-            ),
-          ],
-        ),
-
-        SizedBox(height: 30),
-      ],
+            );
+          },
+        );
+      },
     );
   }
+
+  void _performSearch() {
+    // Hide the search field and clear the search query
+    setState(() {
+      _isSearchVisible = false;
+      _searchController.clear();
+    });
+  }
 }
+
+
