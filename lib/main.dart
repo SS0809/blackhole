@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'dart:math';
-import 'package:url_launcher/url_launcher.dart';
 import 'MovieDetailsWidget.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -24,7 +22,7 @@ class MyApp extends StatelessWidget {
       child: CacheProvider(
         child: MaterialApp(
           theme: new ThemeData(
-            brightness:Brightness.dark,
+            brightness: Brightness.dark,
             primarySwatch: Colors.blue,
             primaryColor: const Color(0xFF212121),
             accentColor: const Color(0xFF64ffda),
@@ -46,6 +44,43 @@ class MovieListScreen extends StatefulWidget {
 class _MovieListScreenState extends State<MovieListScreen> {
   bool _isSearchVisible = false; // Track whether search field is visible
   final TextEditingController _searchController = TextEditingController();
+
+  // Define a scroll controller to handle scroll events
+  ScrollController _scrollController = ScrollController();
+
+  // Define the number of items to show initially
+  final int initialItemCount = 4;
+
+  // The current number of items to show in the list
+  int currentItemCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Set the initial number of items to show
+    currentItemCount = initialItemCount;
+
+    // Add a scroll listener to the ScrollController
+    _scrollController.addListener(_scrollListener);
+  }
+
+  // Function to handle scroll events
+  void _scrollListener() {
+    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+      // If the user reaches the end of the list, load more items
+      setState(() {
+        currentItemCount += 4; // Load four more items
+
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    // Dispose of the scroll controller to avoid memory leaks
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +155,8 @@ class _MovieListScreenState extends State<MovieListScreen> {
         }
 
         return ListView.builder(
-          itemCount: movieNames.length,
+          controller: _scrollController, // Assign the scroll controller
+          itemCount: currentItemCount,
           itemBuilder: (context, index) {
             final movieName = movieNames[index];
             return Query(
@@ -161,5 +197,3 @@ class _MovieListScreenState extends State<MovieListScreen> {
     });
   }
 }
-
-

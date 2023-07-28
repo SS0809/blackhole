@@ -55,8 +55,8 @@ class MovieDetailsWidget extends StatelessWidget {
     }
 
     final String movieName = movieData['movie_name'];
-    final String doodstreamCode = movieData['doodstream_code'];
-    final String streamtapeCode = movieData['streamtape_code'];
+    final String doodstreamCode = (movieData['doodstream_code']==null)?'ok':movieData['doodstream_code'];
+    final String streamtapeCode = (movieData['streamtape_code']==null)?'ok':movieData['streamtape_code'];
     final List<Object?> imgData = movieData['img_data'] as List<Object?>? ?? [];
 
     final List<Widget> imageWidgets = imgData
@@ -76,7 +76,7 @@ class MovieDetailsWidget extends StatelessWidget {
 
     return Column(
       children: [
-        SizedBox(height: 10),
+        SizedBox(height: 40),
         CarouselSlider(
           items: imageWidgets,
           options: CarouselOptions(
