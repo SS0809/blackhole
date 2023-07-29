@@ -176,6 +176,8 @@ class _MovieListScreenState extends State<MovieListScreen> {
                       movie_name
                       size_mb
                       img_data
+                      doodstream_code
+                      streamtape_code
                     }
                   }
                 '''),

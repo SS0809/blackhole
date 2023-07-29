@@ -11,7 +11,7 @@ class MovieDetailsWidget extends StatelessWidget {
   MovieDetailsWidget(this.movieData);
 
   void _openUrl() async {
-    final openUrl = 'https://ss0809.github.io/cdn/subdir1/?moviename=' + movieData['movie_name'];
+    final openUrl = 'https://ss0809.github.io/cdn/subdir1/?moviename=' + movieData['movie_name']+'&streamtape_code='+movieData['streamtape_code']+'&doodstream_code='+movieData['doodstream_code'];
     await launch(openUrl, forceSafariVC: false, forceWebView: false);
   }
 
@@ -52,6 +52,10 @@ class MovieDetailsWidget extends StatelessWidget {
     final String movieName = movieData['movie_name'];
     final String size_mb =
         movieData['size_mb'] != null ? movieData['size_mb'] : "string";
+            final String doodstream_code =
+        movieData['doodstream_code'] != null ? movieData['doodstream_code'] : "string";
+            final String streamtape_code =
+        movieData['streamtape_code'] != null ? movieData['streamtape_code'] : "string";
     final List<Object?> imgData = movieData['img_data'] as List<Object?>? ?? [];
 
     final List<Widget> imageWidgets = imgData
