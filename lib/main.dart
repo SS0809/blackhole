@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'MovieDetailsWidget.dart';
+import 'dart:math';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+
+
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     final HttpLink httpLink = HttpLink('https://graphql-pyt9.onrender.com');
@@ -165,7 +170,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
 
         return ListView.builder(
           controller: _scrollController, // Assign the scroll controller
-          itemCount: currentItemCount,
+          itemCount: min(currentItemCount, movieNames.length),
           itemBuilder: (context, index) {
             final movieName = movieNames[index];
             return Query(
