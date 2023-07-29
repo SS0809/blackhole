@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'MovieDetailsWidget.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 void main() {
   runApp(MyApp());
@@ -66,11 +67,11 @@ class _MovieListScreenState extends State<MovieListScreen> {
 
   // Function to handle scroll events
   void _scrollListener() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
       // If the user reaches the end of the list, load more items
       setState(() {
         currentItemCount += 4; // Load four more items
-
       });
     }
   }
@@ -145,13 +146,21 @@ class _MovieListScreenState extends State<MovieListScreen> {
         }
 
         if (result.data == null) {
-          return Text('Assessing the server');
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Accessing the server'),
+              const SpinKitFadingCircle(
+                color: Colors.white,
+              ),
+            ],
+          );
         }
 
         final movieNames = result.data!['allMovieNames'] as List<dynamic>;
 
         if (movieNames.isEmpty) {
-          return Text('No movies found');
+          return Text('Fetching the Movie');
         }
 
         return ListView.builder(
@@ -165,8 +174,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
                   query GetMovie($movieName: String!) {
                     movie(movie_name: $movieName) {
                       movie_name
-                      streamtape_code
-                      doodstream_code
+                      size_mb
                       img_data
                     }
                   }
@@ -179,8 +187,17 @@ class _MovieListScreenState extends State<MovieListScreen> {
                 }
 
                 final movieData = result?.data?['movie'];
-
-                return movieData != null ? MovieDetailsWidget(movieData) : Text('Movie not found');
+                return movieData != null
+                    ? MovieDetailsWidget(movieData)
+                    : Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Fetching the Movie'),
+                          const SpinKitDoubleBounce(
+                            color: Colors.white,
+                          ),
+                        ],
+                      );
               },
             );
           },

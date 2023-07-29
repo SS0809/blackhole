@@ -3,27 +3,22 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:math';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class MovieDetailsWidget extends StatelessWidget {
   final Map<String, dynamic> movieData;
 
   MovieDetailsWidget(this.movieData);
 
-  void _openDoodstreamUrl() async {
-    final doodstreamUrl = 'https://dooood.com/d/' + movieData['doodstream_code'];
-    await launch(doodstreamUrl, forceSafariVC: false, forceWebView: false);
-  }
-
-  void _openStreamtapeUrl() async {
-    final streamtapeUrl = 'https://streamtape.com/v/' + movieData['streamtape_code'];
-    await launch(streamtapeUrl, forceSafariVC: false, forceWebView: false);
+  void _openUrl() async {
+    final openUrl = 'https://dooood.com/d/' + movieData['movie_name'];
+    await launch(openUrl, forceSafariVC: false, forceWebView: false);
   }
 
   void _reporter() async {
     final _reporterUrl = ''; // Add the URL for reporting here
     await launch(_reporterUrl, forceSafariVC: false, forceWebView: false);
   }
-
 
   void _showFullScreenImage(BuildContext context, String imageUrl) {
     showDialog(
@@ -33,7 +28,8 @@ class MovieDetailsWidget extends StatelessWidget {
           onTap: () => Navigator.pop(context),
           child: Container(
             child: InteractiveViewer(
-              boundaryMargin: EdgeInsets.all(20.0), // Add some margin around the image
+              boundaryMargin:
+                  EdgeInsets.all(20.0), // Add some margin around the image
               minScale: 0.5, // Set the minimum scale of the image
               maxScale: 3.0, // Set the maximum scale of the image
               child: Image.network(
@@ -47,7 +43,6 @@ class MovieDetailsWidget extends StatelessWidget {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     if (movieData == null || !movieData.containsKey('img_data')) {
@@ -55,8 +50,8 @@ class MovieDetailsWidget extends StatelessWidget {
     }
 
     final String movieName = movieData['movie_name'];
-    final String doodstreamCode = (movieData['doodstream_code']==null)?'ok':movieData['doodstream_code'];
-    final String streamtapeCode = (movieData['streamtape_code']==null)?'ok':movieData['streamtape_code'];
+    final String size_mb =
+        movieData['size_mb'] != null ? movieData['size_mb'] : "string";
     final List<Object?> imgData = movieData['img_data'] as List<Object?>? ?? [];
 
     final List<Widget> imageWidgets = imgData
@@ -69,14 +64,13 @@ class MovieDetailsWidget extends StatelessWidget {
           fit: BoxFit.contain,
         ),
       );
-    })
-        .toList();
+    }).toList();
 
     final int initialPage = Random().nextInt(imageWidgets.length);
 
     return Column(
       children: [
-        SizedBox(height: 40),
+        SizedBox(height: 20),
         CarouselSlider(
           items: imageWidgets,
           options: CarouselOptions(
@@ -87,20 +81,15 @@ class MovieDetailsWidget extends StatelessWidget {
           ),
         ),
         Text('Movie Name: $movieName'),
+        Text('Size: $size_mb MB'),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
               onPressed: () {
-                _openDoodstreamUrl();
+                _openUrl();
               },
-              child: Text('Doodstream'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                _openStreamtapeUrl();
-              },
-              child: Text('Streamtape'),
+              child: Text('Get Movie'),
             ),
             ElevatedButton(
               onPressed: () {
