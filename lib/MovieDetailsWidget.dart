@@ -11,12 +11,12 @@ class MovieDetailsWidget extends StatelessWidget {
   MovieDetailsWidget(this.movieData);
 
   void _openUrl() async {
-    final openUrl = 'https://dooood.com/d/' + movieData['movie_name'];
+    final openUrl = 'https://ss0809.github.io/cdn/subdir1/?moviename=' + movieData['movie_name'];
     await launch(openUrl, forceSafariVC: false, forceWebView: false);
   }
 
   void _reporter() async {
-    final _reporterUrl = ''; // Add the URL for reporting here
+    final _reporterUrl = 'https://ss0809.github.io/cdn/subdir2/?moviename=' + movieData['movie_name'];
     await launch(_reporterUrl, forceSafariVC: false, forceWebView: false);
   }
 
