@@ -6,7 +6,7 @@ import 'dart:math';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 
-
+final HttpLink httpLink = HttpLink('https://graphql-pyt9.onrender.com');
 
 void main() {
   runApp(MyApp());
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final HttpLink httpLink = HttpLink('https://graphql-pyt9.onrender.com');
+
 
     final ValueNotifier<GraphQLClient> client = ValueNotifier<GraphQLClient>(
       GraphQLClient(
