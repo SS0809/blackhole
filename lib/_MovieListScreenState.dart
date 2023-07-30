@@ -1,15 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:math';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'MovieDetailsWidget.dart';
 import 'SystemInfo.dart';
 
+void main() {
+  runApp(MyApp());
+}
 List<Widget> _screens = [
   SystemInfo(),
 ];
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Movie List',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MovieListScreen(),
+    );
+  }
+}
 
 class MovieListScreen extends StatefulWidget {
   @override
@@ -19,7 +33,6 @@ class MovieListScreen extends StatefulWidget {
 class _MovieListScreenState extends State<MovieListScreen> {
   bool _isSearchVisible = false;
   final TextEditingController _searchController = TextEditingController();
-  ScrollController _scrollController = ScrollController();
   final int initialItemCount = 4;
   int currentItemCount = 0;
 
@@ -27,33 +40,22 @@ class _MovieListScreenState extends State<MovieListScreen> {
   void initState() {
     super.initState();
     currentItemCount = initialItemCount;
-    _scrollController.addListener(_scrollListener);
 
-    _screens.add(_buildMovieList());
+    _screens.add(_MovieListView());
   }
 
-  void _scrollListener() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
-      setState(() {
-        currentItemCount += 4; // Load four more items
-      });
-    }
-  }
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
+
 
   int _currentIndex = 0;
 
   void _onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
+      currentItemCount = initialItemCount;
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +73,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
           ),
         ],
       ),
-      body: _isSearchVisible ? _buildSearchField() : _screens![_currentIndex],
+       body: _isSearchVisible ? _buildSearchField() : _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
@@ -115,7 +117,53 @@ class _MovieListScreenState extends State<MovieListScreen> {
     );
   }
 
-  Widget _buildMovieList() {
+  void _performSearch() {
+    // Hide the search field and clear the search query
+    setState(() {
+      _isSearchVisible = false;
+      _searchController.clear();
+    });
+  }
+}
+
+
+class _MovieListView extends StatefulWidget {
+  @override
+  __MovieListViewState createState() => __MovieListViewState();
+}
+
+class __MovieListViewState extends State<_MovieListView> {
+  final ScrollController _scrollController = ScrollController();
+  final int initialItemCount = 4;
+  int currentItemCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    currentItemCount = initialItemCount;
+    _scrollController.addListener(_scrollListener);
+  }
+
+  void _scrollListener() {
+    double maxScroll = _scrollController.position.maxScrollExtent;
+    double currentScroll = _scrollController.position.pixels;
+    double tolerance = 5; // Adjust the tolerance value as needed
+
+    if (maxScroll - currentScroll <= tolerance) {
+      setState(() {
+        currentItemCount += 4; // Load four more items
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Query(
       options: QueryOptions(
         document: gql(r'''
@@ -132,13 +180,13 @@ class _MovieListScreenState extends State<MovieListScreen> {
         if (result.data == null) {
           return Center(
             child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Accessing the server'),
-              SizedBox(height: 20),
-              CircularProgressIndicator(),
-            ],
-           ),
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Accessing the server'),
+                SizedBox(height: 20),
+                CircularProgressIndicator(),
+              ],
+            ),
           );
         }
 
@@ -172,7 +220,6 @@ class _MovieListScreenState extends State<MovieListScreen> {
                 if (result?.hasException == true) {
                   return Text(result!.exception.toString());
                 }
-
                 final movieData = result?.data?['movie'];
                 return movieData != null
                     ? MovieDetailsWidget(movieData)
@@ -183,21 +230,13 @@ class _MovieListScreenState extends State<MovieListScreen> {
                           const SpinKitDoubleBounce(
                             color: Colors.white,
                           ),
-                        ],
-                      );
+                     ],
+                   );
               },
             );
           },
         );
       },
     );
-  }
-
-  void _performSearch() {
-    // Hide the search field and clear the search query
-    setState(() {
-      _isSearchVisible = false;
-      _searchController.clear();
-    });
   }
 }
