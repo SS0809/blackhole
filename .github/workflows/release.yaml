@@ -1,4 +1,4 @@
-name: Flutter builder
+name: Release builder
 on:
   push:
     tags:

@@ -29,13 +29,13 @@ import 'package:http/http.dart' as http;class SystemInfo extends StatelessWidget
         var totalSize = result.data?['totalsize']?['total_size'] as String? , textt;
 
         if (totalSize != null) {
-           textt = 'Server Total Size: $totalSize MB';
+          textt = 'Server Total Size: $totalSize MB';
         } else {
           textt = 'Server Size not available';
         }
         return Center(
-            child: Text(textt),
-          );
+          child: Text(textt),
+        );
       },
     );
   }
