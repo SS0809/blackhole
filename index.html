@@ -40,8 +40,28 @@
     <div class="logo-container">
         <img src="./ic_launcher.png" alt="Logo" width="15%">
     </div>
-    <h1>Blackhole APK</h1><br><br><br><br><br><br>
+    <h1>Blackhole APK</h1>
+    <p>version  :  <a id="version_id"></a></p><br><br><br><br><br>
     <p>Download the latest version of Blackhole APK:</p><br>
     <a class="download-btn" href="/blackhole/app-release.apk">Download Now</a>
 </body>
+<script>
+    function getQueryParameters() {
+      const queryString = window.location.search;
+      const params = new URLSearchParams(queryString);
+      const queryParams = {};
+
+      for (const [key, value] of params.entries()) {
+        queryParams[key] = value;
+      }
+
+      return queryParams;
+    }
+
+    const queryParams = getQueryParameters();
+    (queryParams.version != null) ? (console.log(queryParams.version)) : console.log("Nothing");
+
+    const temp = document.getElementById('version_id');
+    temp.textContent =  queryParams.version;
+  </script>
 </html>
