@@ -4,6 +4,8 @@ import 'dart:math';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'MovieDetailsWidget.dart';
 import 'SystemInfo.dart';
+import 'FileDownloader.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -42,6 +44,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
     currentItemCount = initialItemCount;
 
     _screens.add(_MovieListView());
+    _screens.add(FileDownloader());
   }
 
 
@@ -85,6 +88,10 @@ class _MovieListScreenState extends State<MovieListScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Feed',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.download),
+            label: 'Pro',
           ),
         ],
       ),

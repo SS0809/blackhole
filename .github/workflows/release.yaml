@@ -1,4 +1,4 @@
-name: Release builder
+name: Release and Pages builder
 on:
   push:
     tags:
@@ -22,3 +22,18 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: build/app/outputs/apk/release/app-release.apk
+      - run: mkdir docs
+      - run: mv build/app/outputs/apk/release/app-release.apk docs/
+      - run: cp index.html docs/
+      - run: cp README.md docs/
+      - run: cp ./android/app/src/main/res/mipmap-hdpi/ic_launcher.png docs/
+      - uses: actions/upload-artifact@v1
+        with:
+          name: release-apk
+          path: docs/
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@4.1.1
+        with:
+          branch: gh-pages
+          folder: docs
+

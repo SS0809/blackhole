@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'dart:math';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'MovieDetailsWidget.dart';
-import 'package:http/http.dart' as http;class SystemInfo extends StatelessWidget {
+class SystemInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Query(

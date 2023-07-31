@@ -1,25 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'MovieDetailsWidget.dart';
 import '_MovieListScreenState.dart';
-import 'dart:math';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 
 final HttpLink httpLink = HttpLink('https://graphql-pyt9.onrender.com');
 
 void main() {
   runApp(MyApp());
 }
-
+String version_new = 'new';
 class MyApp extends StatelessWidget {
   void _launchURL() async {
-    const url = "https://ss0809.github.io/blackhole/";
-    if (await canLaunch(url)) {
+    var url = "https://ss0809.github.io/blackhole/?version=" + version_new;
       await launch(url, forceSafariVC: false, forceWebView: false);
-    } else {
-      throw "Could not launch $url";
-    }
   }
 
   Future<String> fetchMovieSearch() async {
@@ -59,8 +53,8 @@ class MyApp extends StatelessWidget {
         }
         final String? version = snapshot.data;
         print('Version: $version');
-
-        if (version == 'v1.0') {
+         version_new = version ?? 'new';
+        if (version == 'v1.5') {
           final ValueNotifier<GraphQLClient> client = ValueNotifier<GraphQLClient>(
             GraphQLClient(
               cache: GraphQLCache(),
@@ -103,6 +97,9 @@ class MyApp extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    Image.asset('assets/asset3.png', width: 300, height: 300),
+                    SizedBox(
+                        height: 20),
                     Text(
                       "Your app version is outdated.\nPlease update to the latest version.",
                       textAlign: TextAlign.center,
