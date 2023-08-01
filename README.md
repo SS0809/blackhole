@@ -39,7 +39,7 @@ If you want to delete the tag:
 git tag --delete v1.0.0           # deletes tag locally    
 git push --delete origin v1.0.0   # deletes remote tag
 
-# verify app
+# verify app recreate before pushing
 android/app/build.gradle
 
 android {

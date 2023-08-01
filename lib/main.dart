@@ -13,7 +13,7 @@ String version_new = 'new';
 
 class MyApp extends StatelessWidget {
   void _launchURL() async {
-    var url = "https://ss0809.github.io/blackhole/?version=" + version_new;
+    var url = "https://ss0809.github.io/blackhole/docs?version=" + version_new;
     await launch(url, forceSafariVC: false, forceWebView: false);
   }
 
@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
         final String? version = snapshot.data;
         print('Version: $version');
         version_new = version ?? 'new';
-        if (version == 'v1.9.5') {
+        if (version == 'v2.0.0') {
           final ValueNotifier<GraphQLClient> client =
               ValueNotifier<GraphQLClient>(
             GraphQLClient(

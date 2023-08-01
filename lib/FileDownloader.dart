@@ -226,7 +226,7 @@ class _FileDownloaderState extends State<FileDownloader> {
           SizedBox(
               height: 20), // Add some spacing between the image and the text
           Text(
-            'Currently under Development\n----Login option \n----Download option',
+            'Currently under Development\n----Download && Stream option',
             textAlign: TextAlign.center,
           ),
         ],
