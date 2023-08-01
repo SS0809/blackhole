@@ -3,13 +3,14 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import '_MovieListScreenState.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
 final HttpLink httpLink = HttpLink('https://graphql-pyt9.onrender.com');
 
 void main() {
   runApp(MyApp());
 }
+
 String version_new = 'new';
+
 class MyApp extends StatelessWidget {
   void _launchURL() async {
     var url = "https://ss0809.github.io/blackhole/?version=" + version_new;
@@ -55,7 +56,8 @@ class MyApp extends StatelessWidget {
         print('Version: $version');
         version_new = version ?? 'new';
         if (version == 'v1.8.0') {
-          final ValueNotifier<GraphQLClient> client = ValueNotifier<GraphQLClient>(
+          final ValueNotifier<GraphQLClient> client =
+              ValueNotifier<GraphQLClient>(
             GraphQLClient(
               cache: GraphQLCache(),
               link: httpLink,
@@ -77,7 +79,6 @@ class MyApp extends StatelessWidget {
               ),
             ),
           );
-
         } else {
           return MaterialApp(
             theme: new ThemeData(
@@ -98,16 +99,15 @@ class MyApp extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Image.asset('assets/asset3.png', width: 300, height: 300),
-                    SizedBox(
-                        height: 20),
+                    SizedBox(height: 20),
                     Text(
                       "Your app version is outdated.\nPlease update to the latest version.",
                       textAlign: TextAlign.center,
                       style: new TextStyle(
-                      color: const Color(0xFFffffff),
-                      fontWeight: FontWeight.w200,
-                      fontFamily: "Merriweather"),
-                    ),    
+                          color: const Color(0xFFffffff),
+                          fontWeight: FontWeight.w200,
+                          fontFamily: "Merriweather"),
+                    ),
                     ElevatedButton(
                       onPressed: _launchURL,
                       child: Text("Update Now"),

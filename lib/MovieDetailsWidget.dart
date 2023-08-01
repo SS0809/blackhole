@@ -79,7 +79,7 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
           child: Container(
             child: InteractiveViewer(
               boundaryMargin:
-              EdgeInsets.all(20.0), // Add some margin around the image
+                  EdgeInsets.all(20.0), // Add some margin around the image
               minScale: 0.5, // Set the minimum scale of the image
               maxScale: 3.0, // Set the maximum scale of the image
               child: Image.network(
@@ -100,8 +100,9 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
     }
 
     final String movieName = widget.movieData['movie_name'];
-    final String size_mb =
-    widget.movieData['size_mb'] != null ? widget.movieData['size_mb'] : "string";
+    final String size_mb = widget.movieData['size_mb'] != null
+        ? widget.movieData['size_mb']
+        : "string";
     final String doodstream_code = widget.movieData['doodstream_code'] != null
         ? widget.movieData['doodstream_code']
         : "string";
@@ -137,8 +138,20 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
             aspectRatio: 16 / 9,
           ),
         ),
-        Text('Movie Name: $movieName'),
-        Text('Size: $size_mb MB'),
+        Text(
+          'Movie Name: $movieName',
+          style: new TextStyle(
+              color: const Color(0xFFffffff),
+              fontWeight: FontWeight.w200,
+              fontFamily: "Merriweather"),
+        ),
+        Text(
+          'Size: $size_mb MB',
+          style: new TextStyle(
+              color: const Color(0xFFffffff),
+              fontWeight: FontWeight.w200,
+              fontFamily: "Merriweather"),
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -146,14 +159,26 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
               onPressed: () {
                 _openUrl();
               },
-              child: Text('Get Movie'),
+              child: Text(
+                'Get Movie',
+                style: new TextStyle(
+                    color: const Color(0xFFffffff),
+                    fontWeight: FontWeight.w200,
+                    fontFamily: "Merriweather"),
+              ),
             ),
             ElevatedButton(
-              onPressed: isReported ? null : _reporter, // Disable the button when already reported
+              onPressed: isReported
+                  ? null
+                  : _reporter, // Disable the button when already reported
               style: ElevatedButton.styleFrom(
-                backgroundColor: isReported ? Colors.grey : Colors.red, // Change color if reported
+                backgroundColor: isReported
+                    ? Colors.grey
+                    : Colors.red, // Change color if reported
               ),
-              child: Text(isReported ? 'Reported' : 'Report'), // Change text if reported
+              child: Text(isReported
+                  ? 'Reported'
+                  : 'Report'), // Change text if reported
             ),
           ],
         ),
@@ -161,4 +186,3 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
     );
   }
 }
-
