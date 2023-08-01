@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
         final String? version = snapshot.data;
         print('Version: $version');
         version_new = version ?? 'new';
-        if (version == 'v1.8.0') {
+        if (version == 'v1.9.0') {
           final ValueNotifier<GraphQLClient> client =
               ValueNotifier<GraphQLClient>(
             GraphQLClient(
