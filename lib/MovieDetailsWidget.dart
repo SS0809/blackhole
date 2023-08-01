@@ -95,7 +95,7 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.movieData == null || !widget.movieData.containsKey('img_data')) {
+    if (!widget.movieData.containsKey('img_data')) {
       return Text('Invalid movie data');
     }
 

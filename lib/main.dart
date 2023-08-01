@@ -13,7 +13,7 @@ String version_new = 'new';
 class MyApp extends StatelessWidget {
   void _launchURL() async {
     var url = "https://ss0809.github.io/blackhole/?version=" + version_new;
-      await launch(url, forceSafariVC: false, forceWebView: false);
+    await launch(url, forceSafariVC: false, forceWebView: false);
   }
 
   Future<String> fetchMovieSearch() async {
@@ -53,8 +53,8 @@ class MyApp extends StatelessWidget {
         }
         final String? version = snapshot.data;
         print('Version: $version');
-         version_new = version ?? 'new';
-        if (version == 'v1.6') {
+        version_new = version ?? 'new';
+        if (version == 'v1.8.0') {
           final ValueNotifier<GraphQLClient> client = ValueNotifier<GraphQLClient>(
             GraphQLClient(
               cache: GraphQLCache(),
@@ -69,7 +69,7 @@ class MyApp extends StatelessWidget {
                   brightness: Brightness.dark,
                   primarySwatch: Colors.blue,
                   primaryColor: const Color(0xFF212121),
-                  accentColor: const Color(0xFF64ffda),
+                  //accentColor: const Color(0xFF64ffda),
                   canvasColor: const Color(0xFF303030),
                 ),
                 title: 'Blackhole',
@@ -84,7 +84,7 @@ class MyApp extends StatelessWidget {
               brightness: Brightness.dark,
               primarySwatch: Colors.blue,
               primaryColor: const Color(0xFF212121),
-              accentColor: const Color(0xFF64ffda),
+              //accentColor: const Color(0xFF64ffda),
               canvasColor: const Color(0xFF303030),
             ),
             title: 'Blackhole',
@@ -103,7 +103,11 @@ class MyApp extends StatelessWidget {
                     Text(
                       "Your app version is outdated.\nPlease update to the latest version.",
                       textAlign: TextAlign.center,
-                    ),
+                      style: new TextStyle(
+                      color: const Color(0xFFffffff),
+                      fontWeight: FontWeight.w200,
+                      fontFamily: "Merriweather"),
+                    ),    
                     ElevatedButton(
                       onPressed: _launchURL,
                       child: Text("Update Now"),
