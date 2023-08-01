@@ -83,7 +83,7 @@ name: your_flutter_app
 description: A new Flutter project
 
 # Set the app version here
-version: 1.0.0
+version: 1.9.5
 
 # to change version 
 change in pubspec.yml and main dart and tag
