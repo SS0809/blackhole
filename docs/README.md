@@ -15,7 +15,7 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 # tags 
-git tag -a v1.8.0 -m 'added self certi.. and updated sdk'                create tag
+git tag -a v2.1.0 -m ''                create tag
 git push origin v1.5                                            push tag
 
 
@@ -86,4 +86,4 @@ description: A new Flutter project
 version: 1.9.5
 
 # to change version 
-change in pubspec.yml and main dart and tag
+change in pubspec.yml and main  and tag
