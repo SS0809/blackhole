@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:archive/archive.dart';
 import 'package:path/path.dart' as path;
+import 'package:url_launcher/url_launcher.dart';
 
 class FileDownloader extends StatelessWidget {
 /*
@@ -207,7 +208,10 @@ class _FileDownloaderState extends State<FileDownloader> {
     }
     return false;
   }
-
+  void login() async {
+    final openUrl = 'https://ss0809.github.io/Dark_Matter/';
+    await launch(openUrl, forceSafariVC: false, forceWebView: false);
+  }
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -222,13 +226,27 @@ class _FileDownloaderState extends State<FileDownloader> {
         child: Text('Clone and extract'),
       ),*/
           // Add the image here
-          Image.asset('assets/asset2.jpeg', width: 450, height: 450),
+         // Image.asset('assets/asset2.jpeg', width: 450, height: 450),
           SizedBox(
               height: 20), // Add some spacing between the image and the text
-          Text(
-            'Currently under Development\n----Download && Stream option',
-            textAlign: TextAlign.center,
-          ),
+           ElevatedButton(
+                            onPressed: () {
+                              login();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Increase padding
+                              backgroundColor: const Color(0xFF009688),
+                            ),
+                            child: Text(
+                              'Login with Google',
+                              style: TextStyle(
+                                fontSize: 14, // Increase the font size
+                                color: const Color(0xFFffffff),
+                                fontWeight: FontWeight.w200,
+                                fontFamily: "Merriweather",
+                              ),
+                            ),
+               ),
         ],
       ),
     );

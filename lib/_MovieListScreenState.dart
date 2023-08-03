@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'dart:math';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'MovieDetailsWidget.dart';
 import 'SystemInfo.dart';
-import 'FileDownloader.dart';
+import 'uuid.dart';
 
 
 void main() {
@@ -44,7 +45,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
     currentItemCount = initialItemCount;
 
     _screens.add(_MovieListView());
-    _screens.add(FileDownloader());
+    _screens.add(login());
   }
 
 
@@ -58,7 +59,10 @@ class _MovieListScreenState extends State<MovieListScreen> {
       currentItemCount = initialItemCount;
     });
   }
-
+  void searchmovie_telegram() async {
+    var url = "https://t.me/blackhole_movie_bot";
+    await launch(url, forceSafariVC: false, forceWebView: false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,9 +73,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () {
-              setState(() {
-                _isSearchVisible = !_isSearchVisible;
-              });
+             searchmovie_telegram();
             },
           ),
         ],

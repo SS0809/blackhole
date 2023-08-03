@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '_MovieListScreenState.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:async';
+import 'package:http/http.dart' as http;
+import 'package:uni_links/uni_links.dart';
+import 'package:flutter/services.dart' show PlatformException;
 
 final HttpLink httpLink = HttpLink('https://graphql-pyt9.onrender.com');
 
@@ -12,12 +16,31 @@ void main() {
 String version_new = 'new';
 
 class MyApp extends StatelessWidget {
-  void _launchURL() async {
+    void _launchURL() async {
     var url = "https://ss0809.github.io/blackhole/docs?version=" + version_new;
     await launch(url, forceSafariVC: false, forceWebView: false);
   }
 
-  Future<String> fetchMovieSearch() async {
+void online_test_url() async {
+  Future<void> fetchStatus() async {
+    try {
+      final response =
+          await http.get(Uri.parse('https://' + 'original-google.onrender.com'));
+      if (response.statusCode == 200) {
+        print('fetched');
+        return; // Exit the function once the 200 response is received.
+      }
+              print('running');
+               await Future.delayed(Duration(seconds: 10));
+      fetchStatus();
+    } catch (e) {
+      print('error');
+    }
+  }
+    fetchStatus();
+}
+
+  Future<String> fetchversion() async {
     final GraphQLClient client = GraphQLClient(
       cache: GraphQLCache(),
       link: httpLink,
@@ -45,7 +68,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: fetchMovieSearch(),
+      future: fetchversion(),
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
@@ -54,8 +77,9 @@ class MyApp extends StatelessWidget {
         }
         final String? version = snapshot.data;
         print('Version: $version');
+        online_test_url();
         version_new = version ?? 'new';
-        if (version == 'v2.0.0') {
+        if (version == 'v2.1.0') {
           final ValueNotifier<GraphQLClient> client =
               ValueNotifier<GraphQLClient>(
             GraphQLClient(

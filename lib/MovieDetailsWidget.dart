@@ -92,7 +92,100 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
       },
     );
   }
-
+  void _showMovieDetailsOverlay(BuildContext context, List<Widget> imageWidgets) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Scaffold(
+          backgroundColor:Colors.black.withOpacity(0.8),
+          body:  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                       SizedBox(height: 180),
+                        CarouselSlider(
+                        items: imageWidgets,
+                        options: CarouselOptions(
+                          autoPlay: true,
+                          enlargeCenterPage: true,
+                          aspectRatio: 16 / 9,
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Text(
+                        '${widget.movieData['movie_name']}',
+                        style: TextStyle(
+                          fontSize: 18, // Increase the font size
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFFffffff),
+                          fontFamily: "Merriweather",
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        '(${widget.movieData['size_mb']} MB)',
+                        style: TextStyle(
+                          fontSize: 16, // Increase the font size
+                          color: const Color(0xFFffffff),
+                          fontFamily: "Merriweather",
+                        ),
+                      ),
+                      SizedBox(height: 60),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              _openUrl();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Increase padding
+                              backgroundColor: const Color(0xFF009688),
+                            ),
+                            child: Text(
+                              'Get Movie',
+                              style: TextStyle(
+                                fontSize: 14, // Increase the font size
+                                color: const Color(0xFFffffff),
+                                fontWeight: FontWeight.w200,
+                                fontFamily: "Merriweather",
+                              ),
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: isReported
+                                ? null
+                                : _reporter, // Disable the button when already reported
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Increase padding
+                              backgroundColor: isReported ? Colors.grey : Colors.red,
+                            ),
+                            child: Text(
+                              isReported ? 'Reported' : 'Report',
+                              style: TextStyle(
+                                fontSize: 14, // Increase the font size
+                                color: const Color(0xFFffffff),
+                                fontWeight: FontWeight.w200,
+                                fontFamily: "Merriweather",
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 60),
+                      Text(
+                        'Quality gets reduced during public encoding, \n Upgrade to PRO for best quality',
+                        style: TextStyle(
+                          fontSize: 12, // Increase the font size
+                          color: const Color(0xFFffffff),
+                          fontFamily: "Merriweather",
+                        ),
+                      ),
+                 ],
+             ),
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     if (!widget.movieData.containsKey('img_data')) {
@@ -129,59 +222,22 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
     return Column(
       children: [
         SizedBox(height: 20),
-        CarouselSlider(
-          items: imageWidgets,
-          options: CarouselOptions(
-            initialPage: initialPage,
-            autoPlay: true,
-            enlargeCenterPage: true,
-            aspectRatio: 16 / 9,
-          ),
+        GestureDetector(
+          onTap: () => _showMovieDetailsOverlay(context ,imageWidgets ), // Show movie details overlay on tap
+          child: imageWidgets[0], 
         ),
-        Text(
-          'Movie Name: $movieName',
+        SizedBox(height: 20),
+        GestureDetector(
+          onTap: () => _showMovieDetailsOverlay(context ,imageWidgets ), // Show movie details overlay on tap
+          child: Text(
+          '$movieName',
           style: new TextStyle(
               color: const Color(0xFFffffff),
-              fontWeight: FontWeight.w200,
+              fontWeight: FontWeight.w800,
               fontFamily: "Merriweather"),
         ),
-        Text(
-          'Size: $size_mb MB',
-          style: new TextStyle(
-              color: const Color(0xFFffffff),
-              fontWeight: FontWeight.w200,
-              fontFamily: "Merriweather"),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                _openUrl();
-              },
-              child: Text(
-                'Get Movie',
-                style: new TextStyle(
-                    color: const Color(0xFFffffff),
-                    fontWeight: FontWeight.w200,
-                    fontFamily: "Merriweather"),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: isReported
-                  ? null
-                  : _reporter, // Disable the button when already reported
-              style: ElevatedButton.styleFrom(
-                backgroundColor: isReported
-                    ? Colors.grey
-                    : Colors.red, // Change color if reported
-              ),
-              child: Text(isReported
-                  ? 'Reported'
-                  : 'Report'), // Change text if reported
-            ),
-          ],
-        ),
+        
       ],
     );
   }

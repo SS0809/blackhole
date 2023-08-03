@@ -86,4 +86,4 @@ description: A new Flutter project
 version: 1.9.5
 
 # to change version 
-change in pubspec.yml and main dart and tag
+change in pubspec.yml and main  and tag
