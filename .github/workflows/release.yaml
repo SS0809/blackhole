@@ -1,8 +1,10 @@
 name: Build & Deploy & Release and Pages builder
+
 on:
   push:
     tags:
     - 'v*'
+
 jobs:
   build-and-deploy:
     name: 'Build & Deploy web app'
@@ -26,6 +28,18 @@ jobs:
         run: |
           flutter build web --base-href='/blackhole/web/' --web-renderer=canvaskit --release
       - run: flutter build apk
+      
+      # Add the Sign APK step here
+      - name: Sign APK
+        id: sign_apk
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: build/app/outputs/apk/release
+          signingKeyBase64: ${{ secrets.SIGNINGKEYBASE64 }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTOREPASSWORD }}
+          keyPassword: ${{ secrets.KEYPASSWORD }}
+
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
