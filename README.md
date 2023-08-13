@@ -87,3 +87,6 @@ version: 1.9.5
 
 # to change version 
 change in pubspec.yml and main  and tag
+openssl base64 -A -in your_keystore_name.jks -out base64.txt to github action
+
+https://dev.to/supersuman/build-and-sign-android-apps-using-github-actions-54j

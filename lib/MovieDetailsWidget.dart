@@ -3,6 +3,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'dart:math';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'main.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MovieDetailsWidget extends StatefulWidget {
@@ -45,7 +46,34 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
     }
   }
 
-  void _openUrl() async {
+  void _openads() async {
+    var controller = WebViewController()
+  ..setJavaScriptMode(JavaScriptMode.unrestricted)
+  ..setBackgroundColor(const Color(0x00000000))
+  ..setNavigationDelegate(
+    NavigationDelegate(
+      onProgress: (int progress) {
+        // Update loading bar.
+      },
+      onPageStarted: (String url) {},
+      onPageFinished: (String url) {},
+      onWebResourceError: (WebResourceError error) {},
+      onNavigationRequest: (NavigationRequest request) {
+        if (request.url.startsWith('https://www.youtube.com/')) {
+          return NavigationDecision.prevent;
+        }
+        return NavigationDecision.navigate;
+      },
+    ),
+  )
+  ..loadRequest(Uri.parse('https://ss0809.github.io/ads'));
+  runApp(
+ Dialog(
+    child: WebViewWidget(controller: controller),
+    ),
+  );
+  }
+    void _openUrl() async {
     final openUrl = 'https://ss0809.github.io/cdn/subdir1/?moviename=' +
         widget.movieData['movie_name'] +
         '&streamtape_code=' +
@@ -133,24 +161,29 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              _openUrl();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Increase padding
-                              backgroundColor: const Color(0xFF009688),
-                            ),
-                            child: Text(
-                              'Get Movie',
-                              style: TextStyle(
-                                fontSize: 14, // Increase the font size
-                                color: const Color(0xFFffffff),
-                                fontWeight: FontWeight.w200,
-                                fontFamily: "Merriweather",
-                              ),
-                            ),
-                          ),
+ElevatedButton(
+  onPressed: () {
+    _openads();
+    // After 8 seconds, run _openUrl
+    Future.delayed(Duration(seconds: 8), () {
+      _openUrl();
+    });
+  },
+  style: ElevatedButton.styleFrom(
+    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Increase padding
+    backgroundColor: const Color(0xFF009688),
+  ),
+  child: Text(
+    'Get Movie',
+    style: TextStyle(
+      fontSize: 14, // Increase the font size
+      color: const Color(0xFFffffff),
+      fontWeight: FontWeight.w200,
+      fontFamily: "Merriweather",
+    ),
+  ),
+),
+
                           ElevatedButton(
                             onPressed: isReported
                                 ? null
@@ -238,6 +271,111 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
         ),
         ),
         
+      ],
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+class SeriesDetailsWidget extends StatefulWidget {
+  final String name;
+  final List<dynamic> children;
+
+  SeriesDetailsWidget(this.name, this.children);
+
+  @override
+  _SeriesDetailsWidgetState createState() => _SeriesDetailsWidgetState();
+}
+
+class _SeriesDetailsWidgetState extends State<SeriesDetailsWidget> {
+  bool isExpanded = false;
+  int displayedChildrenCount = 3;
+  bool isLoadingChildQuery = false; // Add this flag
+
+  void _loadMoreChildren() {
+    setState(() {
+      isLoadingChildQuery = true;
+    });
+
+    // Simulate loading data or perform your GraphQL query here
+    Future.delayed(Duration(seconds: 2), () {
+      setState(() {
+        isLoadingChildQuery = false;
+        displayedChildrenCount += 3;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              isExpanded = !isExpanded;
+            });
+          },
+          child: Text(
+            widget.name,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        if (isExpanded)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (int i = 0; i < widget.children.length && i < displayedChildrenCount; i++)
+                Query(
+                  options: QueryOptions(
+                    document: gql(r'''
+                      query GetMovie($movieName: String!) {
+                        movieseries(movie_name: $movieName) {
+                          movie_name
+                          size_mb
+                          img_data
+                          doodstream_code
+                          streamtape_code
+                        }
+                      }
+                    '''),
+                    variables: {'movieName': widget.children[i]},
+                  ),
+                  builder: (QueryResult result, {refetch, FetchMore? fetchMore}) {
+                    if (result.isLoading) {
+                      return CircularProgressIndicator();
+                    }
+                    if (result.hasException) {
+                      return Text(result.exception.toString());
+                    }
+                    final movieData = result.data?['movieseries'];
+                    if (movieData == null) {
+                      return Text('Movie data not available.');
+                    }
+                    return MovieDetailsWidget(movieData);
+                  },
+                ),
+              if (displayedChildrenCount < widget.children.length)
+                isLoadingChildQuery
+                    ? CircularProgressIndicator()
+                    : ElevatedButton(
+                        onPressed: _loadMoreChildren,
+                        child: Text('Load More'),
+                      ),
+            ],
+          ),
       ],
     );
   }

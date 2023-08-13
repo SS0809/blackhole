@@ -10,6 +10,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:archive/archive.dart';
+import 'main.dart';
 import 'package:path/path.dart' as path;
 import 'package:url_launcher/url_launcher.dart';
 
@@ -139,31 +140,34 @@ class _loginState extends State<login> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView(
-        shrinkWrap: true,
-        padding: const EdgeInsets.all(8.0),
-        children: [
-          ElevatedButton(
-            onPressed: () {
-              logi(context);
-            },
-            style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              backgroundColor: const Color(0xFF009688),
-            ),
-            child: Text(
-              'Login with Google',
-              style: TextStyle(
-                fontSize: 14,
-                color: const Color(0xFFffffff),
-                fontWeight: FontWeight.w200,
-                fontFamily: "Merriweather",
-              ),
+return Container(
+  decoration: buildGradientDecoration(),
+    child: ListView(
+      shrinkWrap: true,
+      padding: const EdgeInsets.all(8.0),
+      children: [
+       SizedBox(height: 200), 
+        ElevatedButton(
+          onPressed: () {
+            logi(context);
+          },
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            backgroundColor:  Colors.black,
+          ),
+          child: Text(
+            'Login with Google',
+            style: TextStyle(
+              fontSize: 14,
+              color: const Color(0xFFffffff),
+              fontWeight: FontWeight.w200,
+              fontFamily: "Merriweather",
             ),
           ),
-        ],
-      ),
-    );
+        ),
+       SizedBox(height: 500), 
+      ],
+    ),
+);
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'main.dart';
+
 class SystemInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -17,19 +19,26 @@ class SystemInfo extends StatelessWidget {
         }
 
         if (result.isLoading || result.data == null) {
-          return  Center(
+          return Center(
             child: CircularProgressIndicator(),
           );
         }
-        var totalSize = result.data?['totalsize']?['total_size'] as String? , textt;
+        var totalSize = result.data?['totalsize']?['total_size'] as String?, textt;
 
         if (totalSize != null) {
-          textt = 'Server Total Size: $totalSize MB';
+          textt = '      Total Server Storage: $totalSize mb';
         } else {
           textt = 'Server Size not available';
         }
-        return Center(
-          child: Text(textt),
+
+        return Container(
+     decoration: buildGradientDecoration(),
+          child: Center(
+            child: Text(
+              textt + '\n \n We do not Store/Use your information ',
+              style: TextStyle(color: Colors.white), // Customize text color here
+            ),
+          ),
         );
       },
     );

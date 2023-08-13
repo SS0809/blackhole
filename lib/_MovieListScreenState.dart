@@ -3,14 +3,16 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'dart:math';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'MovieDetailsWidget.dart';
 import 'SystemInfo.dart';
 import 'uuid.dart';
-
+import 'main.dart';
 
 void main() {
   runApp(MyApp());
 }
+
 List<Widget> _screens = [
   SystemInfo(),
 ];
@@ -20,9 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Movie List',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      //theme: ThemeData.dark(),
       home: MovieListScreen(),
     );
   }
@@ -45,11 +45,9 @@ class _MovieListScreenState extends State<MovieListScreen> {
     currentItemCount = initialItemCount;
 
     _screens.add(_MovieListView());
+    _screens.add(_SeriesListView());
     _screens.add(login());
   }
-
-
-
 
   int _currentIndex = 0;
 
@@ -59,6 +57,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
       currentItemCount = initialItemCount;
     });
   }
+
   void searchmovie_telegram() async {
     var url = "https://t.me/blackhole_movie_bot";
     await launch(url, forceSafariVC: false, forceWebView: false);
@@ -73,7 +72,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () {
-             searchmovie_telegram();
+              searchmovie_telegram();
             },
           ),
         ],
@@ -82,17 +81,23 @@ class _MovieListScreenState extends State<MovieListScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
+            icon: Icon(Icons.settings,color: Colors.white,),
             label: 'System',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Feed',
+            icon: Icon(Icons.storage_rounded,color: Colors.white,),
+            label: 'Movies',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.download),
+            icon: Icon(Icons.storage_rounded,color: Colors.white,),
+            label: 'Series',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.download,color: Colors.white,),
             label: 'Pro',
           ),
         ],
@@ -135,7 +140,6 @@ class _MovieListScreenState extends State<MovieListScreen> {
   }
 }
 
-
 class _MovieListView extends StatefulWidget {
   @override
   __MovieListViewState createState() => __MovieListViewState();
@@ -173,7 +177,9 @@ class __MovieListViewState extends State<_MovieListView> {
 
   @override
   Widget build(BuildContext context) {
-    return Query(
+    return Container(
+ decoration: buildGradientDecoration(),
+  child: Query(
       options: QueryOptions(
         document: gql(r'''
           query ExampleQuery {
@@ -239,13 +245,130 @@ class __MovieListViewState extends State<_MovieListView> {
                           const SpinKitDoubleBounce(
                             color: Colors.white,
                           ),
-                     ],
-                   );
+                        ],
+                      );
               },
             );
           },
         );
       },
-    );
+    ),);
+  }
+}
+
+
+
+class _SeriesListView extends StatefulWidget {
+  @override
+  __SeriesListViewState createState() => __SeriesListViewState();
+}
+
+class __SeriesListViewState extends State<_SeriesListView> {
+  final ScrollController _scrollController = ScrollController();
+  final int initialItemCount = 4;
+  int currentItemCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    currentItemCount = initialItemCount;
+    _scrollController.addListener(_scrollListener);
+  }
+
+  void _scrollListener() {
+    double maxScroll = _scrollController.position.maxScrollExtent;
+    double currentScroll = _scrollController.position.pixels;
+    double tolerance = 50; // Adjust the tolerance value as needed
+
+    if (maxScroll - currentScroll <= tolerance) {
+      setState(() {
+        currentItemCount += 4; // Load four more items
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+        return Container(
+ decoration: buildGradientDecoration(),
+  child: Query(
+      options: QueryOptions(
+        document: gql(r'''
+          query ExampleQuery {
+            allSeriesNames
+          }
+        '''),
+      ),
+      builder: (QueryResult result, {refetch, FetchMore? fetchMore}) {
+        if (result.hasException) {
+          return Text(result.exception.toString());
+        }
+
+        if (result.data == null) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Accessing the server'),
+                SizedBox(height: 20),
+                CircularProgressIndicator(),
+              ],
+            ),
+          );
+        }
+
+        final seriesNames = result.data!['allSeriesNames'] as List<dynamic>;
+        if (seriesNames.isEmpty) {
+          return Text('Fetching the Movie');
+        }
+
+        return ListView.builder(
+          controller: _scrollController, // Assign the scroll controller
+          itemCount: min(currentItemCount, seriesNames.length),
+          itemBuilder: (context, index) {
+            String seriesName = seriesNames[index];
+            return Query(
+              options: QueryOptions(
+                document: gql(r'''
+          query GetMovie($seriesName: String!) {
+            series(series_name: $seriesName) {
+              series_name
+              moviename_ref
+            }
+          }
+        '''),
+                variables: {'seriesName': seriesName},
+              ),
+              builder: (QueryResult? result, {refetch, FetchMore? fetchMore}) {
+                if (result?.hasException == true) {
+                  return Text(result!.exception.toString());
+                }
+                final movieData = result?.data?['series'];
+                final movieName = movieData; // Use children instead of name here
+                 final children = movieData?['moviename_ref']?['children'];
+                 final name = movieData?['series_name'];
+                return movieName != null
+                    ? SeriesDetailsWidget(name , children )//full data is parsed
+                    : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Fetching the Movie'),
+                    const SpinKitDoubleBounce(
+                      color: Colors.white,
+                    ),
+                  ],
+                );
+              });
+          },
+        );
+
+      },
+    ),);
   }
 }

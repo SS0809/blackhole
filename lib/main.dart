@@ -7,8 +7,17 @@ import 'package:http/http.dart' as http;
 import 'package:uni_links/uni_links.dart';
 import 'package:flutter/services.dart' show PlatformException;
 
-final HttpLink httpLink = HttpLink('https://graphql-pyt9.onrender.com');
-
+final HttpLink httpLink = HttpLink('https://graphql-pyt9.onrender.com'); 
+Decoration buildGradientDecoration() {
+  return BoxDecoration(
+    gradient: LinearGradient(
+      colors: [Colors.cyan, Colors.deepPurple], // Customize your gradient colors here
+      begin: Alignment.topLeft,
+      end: Alignment.bottomCenter,
+    ),
+  );
+}
+ 
 void main() {
   runApp(MyApp());
 }
@@ -91,13 +100,13 @@ void online_test_url() async {
             client: client,
             child: CacheProvider(
               child: MaterialApp(
-                theme: new ThemeData(
-                  brightness: Brightness.dark,
-                  primarySwatch: Colors.blue,
-                  primaryColor: const Color(0xFF212121),
-                  //accentColor: const Color(0xFF64ffda),
-                  canvasColor: const Color(0xFF303030),
-                ),
+                  //theme: ThemeData.dark(),
+             theme: new ThemeData(
+              brightness: Brightness.dark,
+              primarySwatch: Colors.deepPurple,
+              primaryColor: Colors.white,
+              canvasColor: Colors.black,
+            ),
                 title: 'Blackhole',
                 home: MovieListScreen(),
               ),
@@ -108,8 +117,7 @@ void online_test_url() async {
             theme: new ThemeData(
               brightness: Brightness.dark,
               primarySwatch: Colors.blue,
-              primaryColor: const Color(0xFF212121),
-              //accentColor: const Color(0xFF64ffda),
+              primaryColor: Colors.blue,
               canvasColor: const Color(0xFF303030),
             ),
             title: 'Blackhole',
