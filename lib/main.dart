@@ -88,7 +88,7 @@ void online_test_url() async {
         print('Version: $version');
         online_test_url();
         version_new = version ?? 'new';
-        if (version == 'v2.1.0') {
+        if (version == 'v3.0.0') {
           final ValueNotifier<GraphQLClient> client =
               ValueNotifier<GraphQLClient>(
             GraphQLClient(
