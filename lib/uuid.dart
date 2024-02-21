@@ -1,17 +1,11 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:archive/archive.dart';
 import 'main.dart';
-import 'package:path/path.dart' as path;
 import 'package:url_launcher/url_launcher.dart';
 
 class login extends StatefulWidget {
@@ -114,11 +108,9 @@ class _loginState extends State<login> {
     print('running else ');
 //2nd step
      String uuidResponse = await createuuid();
-    if(uuidResponse != null){
-      var url = 'https://ss0809.github.io/Dark_Matter?uuid='+uuidResponse.replaceAll('"', '');
-     await launch(url , forceSafariVC: false, forceWebView: false);
-    }
-          print(fetchtoken(uuidResponse.replaceAll('"', ''))); //  Instance of 'Future<dynamic>'
+    var url = 'https://ss0809.github.io/Dark_Matter?uuid='+uuidResponse.replaceAll('"', '');
+   await launch(url , forceSafariVC: false, forceWebView: false);
+            print(fetchtoken(uuidResponse.replaceAll('"', ''))); //  Instance of 'Future<dynamic>'
     while(fetchtoken(uuidResponse.replaceAll('"', ''))!='null'){
 //3rd step
      String Tokenresponse = await fetchtoken(uuidResponse.replaceAll('"', ''));//"h"
@@ -146,7 +138,7 @@ return Container(
       shrinkWrap: true,
       padding: const EdgeInsets.all(8.0),
       children: [
-       SizedBox(height: 200), 
+       SizedBox(height: 200),
         ElevatedButton(
           onPressed: () {
             logi(context);
@@ -157,6 +149,60 @@ return Container(
           ),
           child: Text(
             'Login with Google',
+            style: TextStyle(
+              fontSize: 14,
+              color: const Color(0xFFffffff),
+              fontWeight: FontWeight.w200,
+              fontFamily: "Merriweather",
+            ),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            logi(context);
+          },
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            backgroundColor:  Colors.black,
+          ),
+          child: Text(
+            'Login with Telegram',
+            style: TextStyle(
+              fontSize: 14,
+              color: const Color(0xFFffffff),
+              fontWeight: FontWeight.w200,
+              fontFamily: "Merriweather",
+            ),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            logi(context);
+          },
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            backgroundColor:  Colors.black,
+          ),
+          child: Text(
+            'Login with Github',
+            style: TextStyle(
+              fontSize: 14,
+              color: const Color(0xFFffffff),
+              fontWeight: FontWeight.w200,
+              fontFamily: "Merriweather",
+            ),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            logi(context);
+          },
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            backgroundColor:  Colors.black,
+          ),
+          child: Text(
+            'Login with AWS',
             style: TextStyle(
               fontSize: 14,
               color: const Color(0xFFffffff),

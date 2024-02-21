@@ -69,11 +69,25 @@ flutter:
   assets:
     - assets/asset2.jpeg
     - assets/asset3.png
+    - assets/asset4.png
+    - assets/asset1.jpg
+    - assets/car2.jpg
+    - assets/car3.jpg
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  fonts:
+    - family: Pacifico
+      fonts:
+        - asset: assets/Pacifico-Regular.ttf
+    - family: ProtestRiot
+      fonts:
+        - asset: assets/ProtestRiot-Regular.ttf
+    - family: ProtestRevolution
+      fonts:
+        - asset: assets/ProtestRevolution-Regular.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:

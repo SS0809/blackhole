@@ -3,11 +3,11 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'dart:math';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import 'MovieDetailsWidget.dart';
 import 'SystemInfo.dart';
 import 'uuid.dart';
 import 'main.dart';
+import 'search.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,6 +18,7 @@ List<Widget> _screens = [
 ];
 
 class MyApp extends StatelessWidget {
+  bool _isSearchVisible = false;
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -72,12 +73,14 @@ class _MovieListScreenState extends State<MovieListScreen> {
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () {
-              searchmovie_telegram();
+              setState(() {
+                _isSearchVisible = !_isSearchVisible;
+              });
             },
           ),
         ],
       ),
-       body: _isSearchVisible ? _buildSearchField() : _screens[_currentIndex],
+       body: _isSearchVisible ? SearchBarApp() : _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
@@ -226,6 +229,7 @@ class __MovieListViewState extends State<_MovieListView> {
                       img_data
                       doodstream_code
                       streamtape_code
+                      telegram
                     }
                   }
                 '''),

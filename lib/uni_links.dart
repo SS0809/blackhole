@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -157,7 +156,7 @@ class _MyAppState extends State<login> {
 
 
   void _showSnackBar(String msg) {
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       final context = _scaffoldKey.currentContext;
       if (context != null) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(

@@ -5,7 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'main.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'dart:convert';
 class MovieDetailsWidget extends StatefulWidget {
   final Map<String, dynamic> movieData;
 
@@ -73,13 +73,21 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
     ),
   );
   }
-    void _openUrl() async {
+  void _openUrl() async {
     final openUrl = 'https://ss0809.github.io/cdn/subdir1/?moviename=' +
         widget.movieData['movie_name'] +
         '&streamtape_code=' +
         widget.movieData['streamtape_code'] +
         '&doodstream_code=' +
         widget.movieData['doodstream_code'];
+    await launch(openUrl, forceSafariVC: false, forceWebView: false);
+  }
+  void tele_openUrl() async {
+    final str = 'text=' + widget.movieData['telegram'];
+    final bytes = utf8.encode(str);
+    final openUrl = 'https://t.me/blackhole_movie_bot?start=' + base64.encode(bytes);
+     print(openUrl);
+     //https://telegram.me/blackhole_movie_bot?start=dGV4dD1Eb3VibGUuQmxpbmQuMTA4MHAubWt2
     await launch(openUrl, forceSafariVC: false, forceWebView: false);
   }
 
@@ -161,28 +169,50 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-ElevatedButton(
-  onPressed: () {
-    _openads();
-    // After 8 seconds, run _openUrl
-    Future.delayed(Duration(seconds: 8), () {
-      _openUrl();
-    });
-  },
-  style: ElevatedButton.styleFrom(
-    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Increase padding
-    backgroundColor: const Color(0xFF009688),
-  ),
-  child: Text(
-    'Get Movie',
-    style: TextStyle(
-      fontSize: 14, // Increase the font size
-      color: const Color(0xFFffffff),
-      fontWeight: FontWeight.w200,
-      fontFamily: "Merriweather",
-    ),
-  ),
-),
+                          ElevatedButton(
+                            onPressed: () {
+                              _openads();
+                              // After 8 seconds, run _openUrl
+                              Future.delayed(Duration(seconds: 8), () {
+                                _openUrl();
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Increase padding
+                              backgroundColor: const Color(0xFF009688),
+                            ),
+                            child: Text(
+                              'Get Movie',
+                              style: TextStyle(
+                                fontSize: 14, // Increase the font size
+                                color: const Color(0xFFffffff),
+                                fontWeight: FontWeight.w400,
+                                fontFamily: "Merriweather",
+                              ),
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              //_openads();
+                              // After 8 seconds, run _openUrl
+                              Future.delayed(Duration(seconds: 1), () {
+                                tele_openUrl();
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Increase padding
+                              backgroundColor: const Color(0xFF2C9CF8),
+                            ),
+                            child: Text(
+                              'Telegram',
+                              style: TextStyle(
+                                fontSize: 14, // Increase the font size
+                                color: const Color(0xff000000),
+                                fontWeight: FontWeight.w400,
+                                fontFamily: 'Pacifico',
+                              ),
+                            ),
+                          ),
 
                           ElevatedButton(
                             onPressed: isReported
@@ -197,7 +227,7 @@ ElevatedButton(
                               style: TextStyle(
                                 fontSize: 14, // Increase the font size
                                 color: const Color(0xFFffffff),
-                                fontWeight: FontWeight.w200,
+                                fontWeight: FontWeight.w400,
                                 fontFamily: "Merriweather",
                               ),
                             ),

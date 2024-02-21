@@ -1,17 +1,16 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import '_MovieListScreenState.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
-import 'package:uni_links/uni_links.dart';
-import 'package:flutter/services.dart' show PlatformException;
-
-final HttpLink httpLink = HttpLink('https://graphql-pyt9.onrender.com'); 
+var server_url = 'https://tahr-eminent-exactly.ngrok-free.app/';
+final HttpLink httpLink = HttpLink(server_url + 'graphql');
 Decoration buildGradientDecoration() {
   return BoxDecoration(
     gradient: LinearGradient(
-      colors: [Colors.cyan, Colors.deepPurple], // Customize your gradient colors here
+      colors: [Colors.black38, Colors.black38], // Customize your gradient colors here
       begin: Alignment.topLeft,
       end: Alignment.bottomCenter,
     ),
@@ -34,7 +33,7 @@ void online_test_url() async {
   Future<void> fetchStatus() async {
     try {
       final response =
-          await http.get(Uri.parse('https://' + 'original-google.onrender.com'));
+          await http.get(Uri.parse(server_url));
       if (response.statusCode == 200) {
         print('fetched');
         return; // Exit the function once the 200 response is received.
