@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -46,7 +48,7 @@ class _SystemInfoState extends State<SystemInfo> {
               child: CircularProgressIndicator(),
             );
           }
-          var totalSize = result.data?['totalsize']?['total_size'] as String?;
+          var totalSize = result.data?['totalsize'] ;
           var versiondata = result.data?['version'] as String?;
 
           var textt = totalSize != null
@@ -69,7 +71,7 @@ class _SystemInfoState extends State<SystemInfo> {
                     'BLACKHOLE \n',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 68,
+                      fontSize: 64,
                       fontFamily: 'ProtestRevolution',
                     ),
                   ),
