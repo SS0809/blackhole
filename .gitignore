@@ -127,3 +127,4 @@ app.*.symbols
 .vscode/
 .pub/
 build/
+.env

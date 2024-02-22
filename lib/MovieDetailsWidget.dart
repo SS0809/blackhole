@@ -6,6 +6,7 @@ import 'main.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
 class MovieDetailsWidget extends StatefulWidget {
   final Map<String, dynamic> movieData;
 
@@ -112,7 +113,7 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
       builder: (BuildContext context) {
         return GestureDetector(
           onTap: () => Navigator.pop(context),
-          child: Container(
+          child: /*Container(
             child: InteractiveViewer(
               boundaryMargin:
                   EdgeInsets.all(20.0), // Add some margin around the image
@@ -121,10 +122,14 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
               child: Image.network(
                 "https://ucarecdn.com/$imageUrl/",
                 fit: BoxFit.contain,
+              ),*/
+              CachedNetworkImage(
+                imageUrl: "https://ucarecdn.com/$imageUrl/",
+                progressIndicatorBuilder: (context, url, downloadProgress) =>
+                CircularProgressIndicator(value: downloadProgress.progress),
+                errorWidget: (context, url, error) => Icon(Icons.error),
               ),
-            ),
-          ),
-        );
+          );
       },
     );
   }
@@ -273,9 +278,21 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
         .map((imageUrl) {
       return GestureDetector(
         onLongPress: () => _showFullScreenImage(context, imageUrl),
-        child: Image.network(
-          "https://ucarecdn.com/$imageUrl/",
-          fit: BoxFit.contain,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(14), // Adjust the value as needed
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(14), // Adjust the value as needed
+            child: /*Image.network(
+              "https://ucarecdn.com/$imageUrl/",
+              fit: BoxFit.contain,
+            ),*/
+            CachedNetworkImage(
+              imageUrl: "https://ucarecdn.com/$imageUrl/",
+              progressIndicatorBuilder: (context, url, downloadProgress) =>
+                  CircularProgressIndicator(value: downloadProgress.progress),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+            ),
+          ),
         ),
       );
     }).toList();
@@ -289,15 +306,15 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
           onTap: () => _showMovieDetailsOverlay(context ,imageWidgets ), // Show movie details overlay on tap
           child: imageWidgets[0], 
         ),
-        SizedBox(height: 20),
+        SizedBox(height: 5),
         GestureDetector(
           onTap: () => _showMovieDetailsOverlay(context ,imageWidgets ), // Show movie details overlay on tap
           child: Text(
           '$movieName',
           style: new TextStyle(
-              color: const Color(0xFFffffff),
-              fontWeight: FontWeight.w800,
-              fontFamily: "Merriweather"),
+              color: const Color(0xffffffff),
+              fontWeight: FontWeight.w900,
+              fontFamily: "ProtestRevolution"),
         ),
         ),
         

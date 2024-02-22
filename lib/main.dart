@@ -5,6 +5,8 @@ import '_MovieListScreenState.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
+
+
 var server_url = 'https://tahr-eminent-exactly.ngrok-free.app/';
 final HttpLink httpLink = HttpLink(server_url + 'graphql');
 Decoration buildGradientDecoration() {
@@ -16,7 +18,7 @@ Decoration buildGradientDecoration() {
     ),
   );
 }
- 
+
 void main() {
   runApp(MyApp());
 }
