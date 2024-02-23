@@ -23,7 +23,7 @@ jobs:
       - name: 'Get dependencies'
         run: flutter pub get
       - name: 'Building Apk'
-      - run: flutter build apk --release
+        run: flutter build apk --release
       
       # Add the Sign APK step here
       - name: Sign APK
