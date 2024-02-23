@@ -100,6 +100,8 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
           isReported = true;
         });
         print('Reported Status: $reportedStatus');
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Reported " + widget.movieData['movie_name'])));
         // You can perform additional actions here based on the reported status
       } catch (e) {
         print('Failed to report: $e');
@@ -158,14 +160,14 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
                           fontSize: 18, // Increase the font size
                           fontWeight: FontWeight.bold,
                           color: const Color(0xFFffffff),
-                          fontFamily: "Merriweather",
+                          fontFamily: "ProtestRevolution",
                         ),
                       ),
                       SizedBox(height: 10),
                       Text(
                         '(${widget.movieData['size_mb']} MB)',
                         style: TextStyle(
-                          fontSize: 16, // Increase the font size
+                          fontSize: 14, // Increase the font size
                           color: const Color(0xFFffffff),
                           fontFamily: "Merriweather",
                         ),
@@ -192,7 +194,7 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
                                 fontSize: 14, // Increase the font size
                                 color: const Color(0xFFffffff),
                                 fontWeight: FontWeight.w400,
-                                fontFamily: "Merriweather",
+                                fontFamily: "Pacifico",
                               ),
                             ),
                           ),
@@ -228,12 +230,12 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
                               backgroundColor: isReported ? Colors.grey : Colors.red,
                             ),
                             child: Text(
-                              isReported ? 'Reported' : 'Report',
+                              isReported   ? 'Reported' : 'Report',
                               style: TextStyle(
                                 fontSize: 14, // Increase the font size
                                 color: const Color(0xFFffffff),
                                 fontWeight: FontWeight.w400,
-                                fontFamily: "Merriweather",
+                                fontFamily: "Pacifico",
                               ),
                             ),
                           ),
