@@ -2,8 +2,8 @@ name: Build & Deploy & Release and Pages builder
 
 on:
   push:
-    tags:
-    - 'v*'
+    branches:
+        - '*'
 
 jobs:
   build-and-deploy:
@@ -18,16 +18,12 @@ jobs:
           java-version: '12.x'
       - uses: subosito/flutter-action@v2
         with:
-          channel: 'master'
-          flutter-version: '3.13.0-14.0.pre.13'
-      - name: 'Flutter enable Web'
-        run: flutter config --enable-web
+          channel: 'stable'
+          flutter-version: '3.16.5'
       - name: 'Get dependencies'
         run: flutter pub get
-      - name: 'Build web app'
-        run: |
-          flutter build web --base-href='/blackhole/web/' --web-renderer=canvaskit --release
-      - run: flutter build apk
+      - name: 'Building Apk'
+      - run: flutter build apk --release
       
       # Add the Sign APK step here
       - name: Sign APK
