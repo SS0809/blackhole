@@ -1,11 +1,68 @@
-name: Build Windows & Deploy & Release and Pages builder
+name: Build Android & Deploy & Release and Pages builder
 
 on:
   push:
     tags:
-    - 'v*'
+      - 'v*'
 
 jobs:
+  build-and-deploy:
+    name: 'Build & Deploy web app'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          flutter-version: '3.16.5'
+      - name: 'Flutter enable Web'
+        run: flutter config --enable-web
+      - name: 'Get dependencies'
+        run: flutter pub get
+      - name: 'Build web app'
+        run: |
+          flutter build web --base-href='/blackhole/web/' --web-renderer=canvaskit --release
+      - run: flutter build apk
+
+      # Add the Sign APK step here
+      - name: Sign APK
+        id: sign_apk
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: build/app/outputs/apk/release
+          signingKeyBase64: ${{ secrets.SIGNINGKEYBASE64 }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTOREPASSWORD }}
+          keyPassword: ${{ secrets.KEYPASSWORD }}
+
+      - name: Android Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/app/outputs/apk/release/app-release.apk
+
+      - run: mkdir docs
+      - run: mv build/app/outputs/apk/release/app-release.apk docs/
+      - run: cp index.html docs/
+      - run: cp README.md docs/
+      - run: cp ./android/app/src/main/res/mipmap-hdpi/ic_launcher.png docs/
+      - uses: actions/upload-artifact@v1
+        with:
+          name: release-apk
+          path: docs/
+      - run: mkdir upload
+      - run: cp -r build/web upload/
+      - run: cp -r docs upload/
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@4.1.1
+        with:
+          branch: gh-pages
+          folder: upload
+
   build-and-release-windows:
     runs-on: windows-latest
     permissions:
@@ -50,11 +107,11 @@ jobs:
           files:
             - build/windows/runner/Release/Blackhole-windows.zip
             - build/msix/Blackhole.msix
-          recreate: with msix
+          recreate: true  # 'with msix' is not a valid parameter, change it to 'true'
 
       - run: mkdir docs
       - run: mv build/app/outputs/apk/release/app-release.apk docs/
-      - run: mv build/msix/Blackhole.msix docs/      
+      - run: mv build/msix/Blackhole.msix docs/
       - run: cp index.html docs/
       - run: cp README.md docs/
       - run: cp ./android/app/src/main/res/mipmap-hdpi/ic_launcher.png docs/
@@ -64,7 +121,7 @@ jobs:
           path: docs/
       - run: mkdir upload
       - run: cp -r build/web upload/
-      - run: cp -r docs upload/      
+      - run: cp -r docs upload/
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
