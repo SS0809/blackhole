@@ -24,18 +24,6 @@ jobs:
         run: flutter pub get
       - name: 'Building Apk'
         run: flutter build apk --release
-      
-      # Add the Sign APK step here
-      - name: Sign APK
-        id: sign_apk
-        uses: r0adkll/sign-android-release@v1
-        with:
-          releaseDirectory: build/app/outputs/apk/release
-          signingKeyBase64: ${{ secrets.SIGNINGKEYBASE64 }}
-          alias: ${{ secrets.ALIAS }}
-          keyStorePassword: ${{ secrets.KEYSTOREPASSWORD }}
-          keyPassword: ${{ secrets.KEYPASSWORD }}
-
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
