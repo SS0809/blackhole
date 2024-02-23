@@ -9,30 +9,21 @@ import 'uuid.dart';
 import 'main.dart';
 import 'search.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
 List<Widget> _screens = [
   SystemInfo(),
 ];
-
-class MyApp extends StatelessWidget {
-  bool _isSearchVisible = false;
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Movie List',
-      //theme: ThemeData.dark(),
-      home: MovieListScreen(),
-    );
-  }
-}
-
 class MovieListScreen extends StatefulWidget {
+  final bool isDark;
+  final VoidCallback toggleTheme;
+
+  // Constructor
+  MovieListScreen(this.isDark, this.toggleTheme);
+
   @override
   _MovieListScreenState createState() => _MovieListScreenState();
 }
+
+
 
 class _MovieListScreenState extends State<MovieListScreen> {
   bool _isSearchVisible = false;
@@ -67,9 +58,17 @@ class _MovieListScreenState extends State<MovieListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar:AppBar(
         title: Text('Blackhole'),
         actions: [
+          IconButton(
+            onPressed: widget.toggleTheme,
+            icon: Icon(
+              widget.isDark
+                  ? Icons.brightness_2_outlined
+                  : Icons.wb_sunny_outlined,
+            ),
+          ),
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () {
@@ -80,7 +79,8 @@ class _MovieListScreenState extends State<MovieListScreen> {
           ),
         ],
       ),
-       body: _isSearchVisible ? SearchBarApp() : _screens[_currentIndex],
+
+      body: _isSearchVisible ? SearchBarApp() : _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: _onTabTapped,

@@ -266,12 +266,6 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
     final String size_mb = widget.movieData['size_mb'] != null
         ? widget.movieData['size_mb']
         : "string";
-    final String doodstream_code = widget.movieData['doodstream_code'] != null
-        ? widget.movieData['doodstream_code']
-        : "string";
-    final String streamtape_code = widget.movieData['streamtape_code'] != null
-        ? widget.movieData['streamtape_code']
-        : "string";
     final List<Object?> imgData =
         widget.movieData['img_data'] as List<Object?>? ?? [];
 
@@ -312,11 +306,8 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
         GestureDetector(
           onTap: () => _showMovieDetailsOverlay(context ,imageWidgets ), // Show movie details overlay on tap
           child: Text(
-          '$movieName',
-          style: new TextStyle(
-              color: const Color(0xffffffff),
-              fontWeight: FontWeight.w900,
-              fontFamily: "ProtestRevolution"),
+          '$movieName'+'        $size_mb MB',
+            style: Theme.of(context).textTheme.bodyText2,
         ),
         ),
         

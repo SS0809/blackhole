@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-
+import 'main.dart';
 class SystemInfo extends StatefulWidget {
   @override
   _SystemInfoState createState() => _SystemInfoState();
 }
 
 class _SystemInfoState extends State<SystemInfo> {
-  int currentAssetIndex = 0;
 
   void changeAsset(int newIndex) {
     setState(() {
@@ -54,24 +53,13 @@ class _SystemInfoState extends State<SystemInfo> {
               : 'Server Size not available';
 
           return Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(assetList[currentAssetIndex]),
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(
-                    Colors.black.withOpacity(0.3), BlendMode.dstATop),
-              ),
-            ),
+            decoration: buildGradientDecoration(),
             child: Stack(
               children: [
                 Center(
                   child: Text(
                     'BLACKHOLE \n',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 64,
-                      fontFamily: 'ProtestRevolution',
-                    ),
+                    style: Theme.of(context).textTheme.bodyText1,
                   ),
                 ),
                 Center(
@@ -79,11 +67,7 @@ class _SystemInfoState extends State<SystemInfo> {
                     padding: EdgeInsets.fromLTRB(0, 220, 0, 0),
                     child: Text(
                       '\n' + textt,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontFamily: 'ProtestRiot',
-                      ),
+                      style: Theme.of(context).textTheme.bodyText2,
                     ),
                   ),
                 ),
@@ -96,5 +80,3 @@ class _SystemInfoState extends State<SystemInfo> {
   }
 }
 
-// Define your asset list somewhere outside the widget
-List<String> assetList = ['assets/asset1.jpg', 'assets/asset4.png','assets/car2.jpg','assets/car3.jpg',];
