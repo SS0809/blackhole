@@ -90,3 +90,14 @@ change in pubspec.yml and main  and tag
 openssl base64 -A -in your_keystore_name.jks -out base64.txt to github action
 
 https://dev.to/supersuman/build-and-sign-android-apps-using-github-actions-54j
+
+
+
+
+
+
+You may have to sign the apk. Newer versions of Android require you to sign it as well. In Kali do:
+
+For generating the keystore: keytool -genkey -v -keystore my-release-key.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
+
+For singing the App: jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore my_application.apk alias_name
