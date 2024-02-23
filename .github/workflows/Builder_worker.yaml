@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-deploy:
-    name: 'Build & Deploy web app'
+    name: 'Build app'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -35,7 +35,6 @@ jobs:
           name: release-apk
           path: docs/
       - run: mkdir upload
-      - run: cp -r build/web upload/
       - run: cp -r docs upload/
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@4.1.1
