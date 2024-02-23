@@ -1,9 +1,9 @@
-name: Build Android & Deploy & Release and Pages builder
+name: Build & Deploy & Release and Pages builder
 
 on:
   push:
     tags:
-      - 'v*'
+    - 'v*'
 
 jobs:
   build-and-deploy:
@@ -18,8 +18,8 @@ jobs:
           java-version: '12.x'
       - uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
-          flutter-version: '3.16.5'
+          channel: 'master'
+          flutter-version: '3.13.0-14.0.pre.13'
       - name: 'Flutter enable Web'
         run: flutter config --enable-web
       - name: 'Get dependencies'
@@ -28,7 +28,7 @@ jobs:
         run: |
           flutter build web --base-href='/blackhole/web/' --web-renderer=canvaskit --release
       - run: flutter build apk
-
+      
       # Add the Sign APK step here
       - name: Sign APK
         id: sign_apk
@@ -40,7 +40,7 @@ jobs:
           keyStorePassword: ${{ secrets.KEYSTOREPASSWORD }}
           keyPassword: ${{ secrets.KEYPASSWORD }}
 
-      - name: Android Release
+      - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: build/app/outputs/apk/release/app-release.apk
