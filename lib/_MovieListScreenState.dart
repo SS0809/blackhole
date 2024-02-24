@@ -356,6 +356,7 @@ class __SeriesListViewState extends State<_SeriesListView> {
             series(series_name: $seriesName) {
               series_name
               moviename_ref
+              img_data
             }
           }
         '''),
@@ -369,8 +370,9 @@ class __SeriesListViewState extends State<_SeriesListView> {
                 final movieName = movieData; // Use children instead of name here
                  final children = movieData?['moviename_ref']?['children'];
                  final name = movieData?['series_name'];
+                final String img_data = movieData?['img_data'] != null ? ("https://ucarecdn.com/" + movieData?['img_data'] + "/") : "";
                 return movieName != null
-                    ? SeriesDetailsWidget(name , children )//full data is parsed
+                    ? SeriesDetailsWidget(name , children , img_data)//full data is parsed
                     : Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

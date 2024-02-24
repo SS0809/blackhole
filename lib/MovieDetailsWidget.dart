@@ -329,8 +329,8 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
 class SeriesDetailsWidget extends StatefulWidget {
   final String name;
   final List<dynamic> children;
-
-  SeriesDetailsWidget(this.name, this.children);
+  final String img_data;
+  SeriesDetailsWidget(this.name, this.children , this.img_data );
 
   @override
   _SeriesDetailsWidgetState createState() => _SeriesDetailsWidgetState();
@@ -359,20 +359,32 @@ class _SeriesDetailsWidgetState extends State<SeriesDetailsWidget> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        GestureDetector(
+       GestureDetector(
           onTap: () {
             setState(() {
               isExpanded = !isExpanded;
             });
           },
-          child: Text(
-            widget.name,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+          child: Column(
+            children: [
+              CachedNetworkImage(
+                imageUrl: widget.img_data,
+                progressIndicatorBuilder: (context, url, downloadProgress) =>
+                    CircularProgressIndicator(value: downloadProgress.progress),
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ),
+              Text(
+                widget.name,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              //... rest of the code
+            ],
           ),
-        ),
+        )
+,
         if (isExpanded)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
