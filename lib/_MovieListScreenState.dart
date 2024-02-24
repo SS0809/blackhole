@@ -215,34 +215,42 @@ class __MovieListViewState extends State<_MovieListView> {
         }
 
         return ListView.builder(
-          controller: _scrollController, // Assign the scroll controller
+          controller: _scrollController,
           itemCount: min(currentItemCount, movieNames.length),
           itemBuilder: (context, index) {
             final movieName = movieNames[index];
-            return Query(
-              options: QueryOptions(
-                document: gql(r'''
-                  query GetMovie($movieName: String!) {
-                    movie(movie_name: $movieName) {
-                      movie_name
-                      size_mb
-                      img_data
-                      doodstream_code
-                      streamtape_code
-                      telegram
-                    }
+
+            return FutureBuilder(
+              future: Future.delayed(Duration(milliseconds: 400 )),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  // While waiting for the delay, show a loading indicator or placeholder
+                  return  SpinKitDoubleBounce(
+                    color: Colors.white,
+                  );
+                } else {
+                  // Use the delayed result to fetch the movie data
+                  return Query(
+                    options: QueryOptions(
+                      document: gql(r'''
+                query GetMovie($movieName: String!) {
+                  movie(movie_name: $movieName) {
+                    movie_name
+                    size_mb
+                    img_data
                   }
-                '''),
-                variables: {'movieName': movieName},
-              ),
-              builder: (QueryResult? result, {refetch, FetchMore? fetchMore}) {
-                if (result?.hasException == true) {
-                  return Text(result!.exception.toString());
                 }
-                final movieData = result?.data?['movie'];
-                return movieData != null
-                    ? MovieDetailsWidget(movieData)
-                    : Column(
+              '''),
+                      variables: {'movieName': movieName},
+                    ),
+                    builder: (QueryResult? result, {refetch, FetchMore? fetchMore}) {
+                      if (result?.hasException == true) {
+                        return Text(result!.exception.toString());
+                      }
+                      final movieData = result?.data?['movie'];
+                      return movieData != null
+                          ? MovieDetailsWidget(movieData)
+                          : Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text('Fetching the Movie'),
@@ -251,10 +259,14 @@ class __MovieListViewState extends State<_MovieListView> {
                           ),
                         ],
                       );
+                    },
+                  );
+                }
               },
             );
           },
         );
+
       },
     ),);
   }
