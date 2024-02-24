@@ -238,6 +238,7 @@ class __MovieListViewState extends State<_MovieListView> {
                     movie_name
                     size_mb
                     img_data
+                    telegram
                   }
                 }
               '''),

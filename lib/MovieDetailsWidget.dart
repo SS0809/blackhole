@@ -78,9 +78,9 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
     final openUrl = 'https://ss0809.github.io/cdn/subdir1/?moviename=' +
         widget.movieData['movie_name'] +
         '&streamtape_code=' +
-        widget.movieData['streamtape_code'] +
+        widget.movieData['telegram'] +
         '&doodstream_code=' +
-        widget.movieData['doodstream_code'];
+        widget.movieData['telegram'];
     await launch(openUrl, forceSafariVC: false, forceWebView: false);
   }
   void tele_openUrl() async {
@@ -178,11 +178,12 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
                         children: [
                           ElevatedButton(
                             onPressed: () {
-                              _openads();
+                              //_openads();
+                              _openUrl();
                               // After 8 seconds, run _openUrl
-                              Future.delayed(Duration(seconds: 8), () {
+                              /*Future.delayed(Duration(seconds: 8), () {
                                 _openUrl();
-                              });
+                              });*/
                             },
                             style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Increase padding
