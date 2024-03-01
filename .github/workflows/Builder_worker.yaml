@@ -20,6 +20,11 @@ jobs:
         with:
           channel: 'stable'
           flutter-version: '3.16.5'
+      - name: Create .env file
+        run: |
+            cat > .env <<EOF
+            SERVER=${{ secrets.SERVER }}
+            EOF
       - name: 'Get dependencies'
         run: flutter pub get
       - name: 'Building Apk'
