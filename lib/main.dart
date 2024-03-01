@@ -5,10 +5,22 @@ import '_MovieListScreenState.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+
+
+
+
+Future main() async {
+  await dotenv.load(fileName: ".env");
+  runApp(MyApp());
+}
+
+
 bool isDark = false;
 int currentAssetIndex = 0;
 List<String> assetList = ['assets/asset1.jpg', 'assets/asset4.png','assets/car2.jpg','assets/car3.jpg'];
-var server_url = 'https://tahr-eminent-exactly.ngrok-free.app/';
+var server_url = dotenv.env['SERVER'] ?? '';
 final HttpLink httpLink = HttpLink(server_url + 'graphql');
 Decoration buildGradientDecoration() {
   return /*BoxDecoration(
@@ -18,18 +30,16 @@ Decoration buildGradientDecoration() {
       end: Alignment.bottomCenter,
     ),
   );*/
-  BoxDecoration(
-    image: DecorationImage(
-      image: AssetImage(assetList[currentAssetIndex]),
-      fit: BoxFit.cover,
-      colorFilter: isDark ? ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop) : ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop) ,
-    ),
-  );
+    BoxDecoration(
+      image: DecorationImage(
+        image: AssetImage(assetList[currentAssetIndex]),
+        fit: BoxFit.cover,
+        colorFilter: isDark ? ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop) : ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop) ,
+      ),
+    );
 }
 
-void main() {
-  runApp(MyApp());
-}
+
 void _launchURL() async {
   var url = "https://ss0809.github.io/blackhole/docs?version=" + version_new;
   await launch(url, forceSafariVC: false, forceWebView: false);
