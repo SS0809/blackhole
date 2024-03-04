@@ -401,6 +401,8 @@ class _SeriesDetailsWidgetState extends State<SeriesDetailsWidget> {
                           img_data
                           doodstream_code
                           streamtape_code
+                          telegram 
+                          size_mb
                         }
                       }
                     '''),
